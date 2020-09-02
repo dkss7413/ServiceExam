@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.nfc.Tag;
+import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,8 +19,15 @@ public class MyService extends Service {
     public static final String TAG = MyService.class.getSimpleName();
     private Thread mThread;
     private int mCount = 0;
+    private IBinder mBinder = new MyBinder();
 
     public MyService() {
+    }
+
+    public class MyBinder extends Binder{
+        public MyService getService(){
+            return MyService.this;
+        }
     }
 
     @Override
@@ -63,8 +71,11 @@ public class MyService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return mBinder;
+    }
+
+    public int getCount(){
+        return mCount;
     }
 
     private void startForegroundService(){
